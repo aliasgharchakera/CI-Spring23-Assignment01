@@ -1,6 +1,7 @@
 
 
 def read_tsp(file_path):
+    citiesCoordinates = {}
     with open(file_path, 'r') as file:
         data = {}
         line = file.readline().strip()
@@ -20,11 +21,10 @@ def read_tsp(file_path):
                 for i in range(data['dimension']):
                     line = file.readline().strip()
                     node = [float(x) for x in line.split()[1:]]
-                    nodes.append(node)
+                    nodes.append((node[0],node[1]))
                 data['nodes'] = nodes
-                return data
+                for i in range(len(data['nodes'])):
+                    citiesCoordinates[i] = nodes[i]
+                return citiesCoordinates
             line = file.readline().strip()
 
-file_path = "qa194.tsp"
-data = read_tsp(file_path)
-print(data)
