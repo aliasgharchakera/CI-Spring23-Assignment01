@@ -4,72 +4,85 @@ import math
 import tsplib95 as tsp
 
 class TSP:
+
     def __init__(self, path, n) -> None:
         file = tsp.load(path)
         temp = file.as_keyword_dict()
-        self.graph = temp['NODE_COORD_SECTION']
-        self.num = temp['DIMENSION']
-        self.fitnessValues = []
-        # print(self.graph)
-        self.population = self.generatepopulation(n)
-        #print(self.population)
-        #print(self.graph)
-        self.cities = {}
-        for i in range(194):
-            self.cities[i] = self.graph[i+1]
+        self.cities = temp['NODE_COORD_SECTION']
+        self.dimension = temp['DIMENSION']
+        # self.cities = {}
+        # for i in range(194):
+        #     self.cities[i] = self.graph[i+1]
+        self.population = self.generatepopulation(self.dimension)
+        #print(self.cities)
+        # print(self.population)
+        #print(self.num)
+    
+    def fitness(self, lst):
+        fit = 0
+        for i in range(len(lst)):
+            if i != len(lst)-1:
+                distance = self.getDistance(
+                    self.cities[lst[i]], self.cities[lst[i+1]])
+                fit += distance
+        # doing this as it will complete the path by covering the distance from last node to first node.
+        fit += self.getDistance(
+            self.cities[len(lst)-1], self.cities[lst[0]])
+        return fit
 
-    def calculateFitness(self,population:list):
+    def calculateFitness(self,tour:list):
         """
         Calculates the fitness of the self.population
         """
-        # for i in self.self.population:
-        #     self.fitness = self.__getFitness(i)
-        length = 0.0
-        self.fitnessValues = []
-        for i in range(len(population)):
-            for j in range(len(population[i])-1):
-                length += self.getDistance(self.cities[population[i][j]], self.cities[population[i][j+1]])
-            self.fitnessValues.append(length)
-        return self.fitnessValues
-    
-    # def __getFitness(self, lst: list):
-    #     """returns the fitness value for the self.population
-
-    #     Args:
-    #         lst (list): self.population
-    #     """
-    #     length = 0
-    #     for i in range(len(lst)):
-    #         length += tsp.getD
+        # length = 0.0
+        # self.fitnessValues = []
+        # for i in range(len(self.population)):
+        #     for j in range(len(self.population[i])-1):
+        #         length += self.getDistance(self.cities[self.population[i][j]], self.cities[self.population[i][j+1]])
+        #     self.fitnessValues.append(length)
+        # return self.fitnessValues
+        #10 cities
+        #tour = [1,2,3,4,5,6,7,8,9,10]
+        #cities = {'1':(x,y),2:(x,y)}
+        length = 0
+        for i in range(len(tour)-1):
+            # print(self.cities[tour[i]], self.cities[tour[i+s1]])
+            length += self.getDistance(self.cities[tour[i]], self.cities[tour[i+1]])
+        
+        #to return back to origin city    
+        length += self.getDistance(self.cities[tour[len(tour)-1]], self.cities[tour[0]])
+        return length
 
     def generatepopulation(self, n):
         """
         Generates a random initial self.population.
         """
-        self.population = list()
-        # for i in range(n):
-        #     done = list()
-        #     for j in range(1, self.num + 1):
-        #         city = random.randint(1, self.num)
-        #         while city in done:
-        #             city = random.randint(1, self.num)
-        #         done.append(city)
-        #     self.population.append(done)
-        # return self.population
-        generateCount = n
-        for i in range(generateCount):                  
-            tour = list(range(194))
-            random.shuffle(tour)
-            self.population.append(tour)
+        self.population = {}
+        for i in range(1,n+1):
+            done = list()
+            for j in range(self.dimension):
+                city = random.randint(1, self.dimension+1)
+                while city in done:
+                    city = random.randint(1, self.dimension+1)
+                done.append(city)
+            self.population[self.calculateFitness(done)] = done
         return self.population
-    
-    def chooseParents(self):
-        """
-        Implements a parent selection criteria
-        
-        Returns the selected pair
-        """
-        pass
+        # chromo_dic = {}
+        # for i in range(n):
+        #     temp = list(range(194))
+        #     random.shuffle(temp)
+            
+        #     while (tuple(temp) in chromo_dic):
+        #         temp = list(range(194))
+        #         random.shuffle(temp)
+        #     chromo_dic[tuple(temp)] = self.fitness(temp)
+        # return chromo_dic
+        # generateCount = n
+        # for i in range(generateCount):                  
+        #     tour = list(range(194))
+        #     random.shuffle(tour)
+        #     self.population.append(tour)
+        # return self.population
     
     def getOffspring(self):
         """Implement Crossover and Mutation
@@ -88,10 +101,10 @@ class TSP:
         offspring1 = self.repair(offspring1)
         offspring2 = self.repair(offspring2)
 
-        tempPop = [offspring1,offspring2]
-        tempLength = self.calculateFitness(tempPop)
-        self.fitnessValues.append(tempLength[0])
-        self.fitnessValues.append(tempLength[1])
+        # tempPop = [offspring1,offspring2]
+        # tempLength = self.calculateFitness(tempPop)
+        # self.fitnessValues.append(tempLength[0])
+        # self.fitnessValues.append(tempLength[1])
 
         self.population.append(offspring1)
         self.population.append(offspring2)
@@ -150,7 +163,47 @@ class TSP:
                 break 
         return self.parents
 
-bruh = TSP("qa194.tsp", 10)
-population = bruh.getPopulation()
-bruh.calculateFitness(population)
-bruh.getOffspring()
+    def fitnessProportionalSurvivalSelection(self)->list:
+    #reference: CHATGPT
+        totalFitness = sum(self.fitnessValues)
+        normalized_fitness = [f/totalFitness for f in self.fitnessValues]
+        CDF = [normalized_fitness[0]]
+        for i in range(1, len(normalized_fitness)):
+            CDF.append(CDF[-1] + normalized_fitness[i])
+        self.parents = []
+        for i in range(len(self.population)):
+            r = random.random()
+            for j, f in enumerate(CDF):
+                # print(j)
+                if r <= f:
+                    if (self.population[j]) not in self.parents:
+                        self.parents.append(self.population[j])
+                        break
+        self.population = self.parents
+
+
+
+# bruh = TSP("qa194.tsp", 10)
+# bruh.calculateFitness()
+# bruh.getOffspring()
+# bruh.fitnessProportionalSurvivalSelection()
+# print(bruh.calculateFitness())
+
+def main():
+    bruh = TSP('qa194.tsp',10)
+    print(bruh.calculateFitness())
+    # for i in range(100000):
+        # bruh.calculateFitness()
+        # for i in range(100):
+            # bruh.getOffspring()
+        # bruh.fitnessProportionalSurvivalSelection()
+    # print(bruh.calculateFitness())
+
+main()
+
+
+
+# population = bruh.getPopulation()
+# bruh.calculateFitness(population)
+# bruh.getOffspring()
+# print(bruh.get_fitness())
