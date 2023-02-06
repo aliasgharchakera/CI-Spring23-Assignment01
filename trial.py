@@ -1,3 +1,4 @@
-import tsplib95 as tsp
+dict = {1: 0, 2: 21, 10: 24}
 
-file = tsp.load("qa194.tsp")
+for i, j in dict.items():
+    print(i, j)

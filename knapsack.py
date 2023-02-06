@@ -1,10 +1,39 @@
 from evolutionaryalgo import *
 import random
 
+class Sack:
+    def __init__(self, n) -> None:
+        # self.value = value
+        # self.weight = weight
+        # self.items = list()
+        self.weight = 0
+        self.value = 0
+        self.__initializeSack(n)
+        self.__calculateWV()
+        
+    def __initializeSack(self, n):
+        self.items = dict()
+        for i in range(n):
+            self.items[i] = (0, 0)
+    
+    def __calculateWV(self):
+        for i, j in self.items.items():
+            self.weight += j[0]
+            self.value += j[1]
+    
+    def insert(self, item: (int, int), n):
+        # self.items.append(item)
+        try: self.items[n] = (item[0], self.items[n] + item[1])
+        except: self.items[n] = (item[0], item[1])
+        self.weight += item[0]
+        self.value += item[1]
+         
+
 class Knapsack:
     def __init__(self, path, n) -> None:
         self.things = dict()
         self.stuff = list()
+        self.fitness = list()
         with open(path) as f:
             lines = f.readlines()
             self.num, self.capacity = lines[0].split()
@@ -12,23 +41,24 @@ class Knapsack:
             for i in lines[1::]:
                 value, weight = i.split()
                 self.things[int(value)] = int(weight)
-                self.stuff.append((int(value), int(weight)))
+                self.stuff.append((int(weight), int(value)))
                 # print(value, weight)
             # print(self.num)
             # print(self.capacity)
             # print(list(self.things))
         # print(self.graph)
         self.population = self.generatePopulation(n)
-        print(self.population)
+        self.calculateFitness()
+        # print(self.population)
         
     def calculateFitness(self):
         """
         Calculates the fitness of the population
         """
         for i in self.population:
-            self.fitness = self.__getFitness(i)
+            self.fitness.append(i.value)
     
-    def __getFitness(self, lst: list):
+    def __getFitness(self, sack: Sack):
         """returns the fitness value for the population
 
         Args:
@@ -54,20 +84,29 @@ class Knapsack:
         #         except: done[item] = value
         #         sum += value
         #     population.append(done)
+        # for i in range(n):
+        #     done = dict()
+        #     sum = 0
+        #     while sum < self.capacity:
+        #         n = random.randint(0, self.num - 1)
+        #         weight = self.stuff[n][0]
+        #         value = self.stuff[n][1]
+        #         sum += weight
+        #         if sum > self.capacity:
+        #             break
+                # try: done[n] = (weight, done[n] + value)
+                # except: done[n] = (weight, value)
+        #     print(sum)
+        #     population.append(done)
         for i in range(n):
-            done = dict()
-            sum = 0
-            while sum < self.capacity:
-                n = random.randint(0, self.num - 1)
-                weight = self.stuff[n][1]
-                value = self.stuff[n][0]
-                sum += weight
-                if sum > self.capacity:
+            sack = Sack(self.num)
+            while sack.weight < self.capacity:
+                k = random.randint(0, self.num - 1)
+                if sack.weight + self.stuff[k][0] > self.capacity:
                     break
-                try: done[n] = (weight, done[n] + value)
-                except: done[n] = (weight, value)
-            print(sum)
-            population.append(done)
+                sack.insert(self.stuff[k], k)
+            print(sack.weight)
+            population.append(sack)
         return population
     
     def chooseParents(self):
@@ -76,7 +115,15 @@ class Knapsack:
         
         Returns the selected pair
         """
-        pass
+        max = 0
+        j = 0
+        maxJ = 0
+        for i in self.fitness:
+            if i > max:
+                max = i
+                maxJ = j
+            j += 1
+                
     
     def getOffspring(self, parents: list):
         """Implement Crossover and Mutation
