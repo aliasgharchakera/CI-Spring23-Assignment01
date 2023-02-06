@@ -2,6 +2,7 @@
 import tsplib95 as tsp
 import math
 import random
+import selection_scheme as ss
 
 class TSP:
     
@@ -16,7 +17,10 @@ class TSP:
         temp = file.as_keyword_dict()
         self.cities = temp['NODE_COORD_SECTION']
         self.dimension = temp['DIMENSION']
-        self.population = self.generatepopulation(n)
+        self.population = self.generatePopulation(n)
+        self.n = n
+        #print(self.population.keys())
+        #print('-----')
 
     def calculateEucDistance(self, c1, c2):
         '''
@@ -31,12 +35,12 @@ class TSP:
         '''
         totalDistance = 0
         for i in range(len(tour)-1):
-            totalDistance += self.calculateEucDistance(tour[i],tour[i+1])
+            totalDistance += self.calculateEucDistance(self.cities[tour[i]],self.cities[tour[i+1]])
         #Adding distance back to the origin
-        totalDistance += self.calculateEucDistance(tour[len(tour)-1],tour[0])
+        totalDistance += self.calculateEucDistance(self.cities[tour[len(tour)-1]],self.cities[tour[0]])
         return round(totalDistance,2)
     
-    def generatepopulation(self, n):
+    def generatePopulation(self, n):
         """
         Generates a random initial self.population.
         """
@@ -51,9 +55,77 @@ class TSP:
             self.population[self.calculateFitness(done)] = done
         return self.population
 
-    
     def selectParents(self):
+        '''
+        will select two parents randomly from the population
+        '''
+        #random selection of parents
+        # lstDctKeys = list(self.population.keys())
+        # # print(lstDctKeys)
+        # #print(random.randint(0,len(lstDctKeys)-1))
+        # firstRandomKey = lstDctKeys[random.randint(0,len(lstDctKeys)-1)]
+        # secondRandomKey = lstDctKeys[random.randint(0,len(lstDctKeys)-1)]
+        # return firstRandomKey, secondRandomKey
 
+        #Parents selection from fitness proportional share
+        parents = ss.fitnessProportionalSelection(self.population)
+        return parents[0], parents[1]
+
+    def crossOver(self):
+        '''
+        This function will do crossover of two parents
+        '''
+        populationDctKeys = self.selectParents()
+        firstParent = self.population[populationDctKeys[0]]
+        secondParent = self.population[populationDctKeys[1]]
+        
+        crossover_point = random.randint(1, len(firstParent) - 1)
+
+        offspring1 = firstParent[:crossover_point] + secondParent[crossover_point:]
+        offspring2 = secondParent[:crossover_point] + firstParent[crossover_point:]
+ 
+        offspring1 = self.mutate(offspring1)
+        offspring2 = self.mutate(offspring2)
+        
+        #print(self.calculateFitness(offspring1))
+
+        self.population[self.calculateFitness(offspring1)] = offspring1
+        self.population[self.calculateFitness(offspring2)] = offspring2
+
+    def mutate(self,offspring):
+        tour = []
+        visited = [False] * (len(offspring)+1)
+        for i in range(len(offspring)):
+            if not visited[offspring[i]]:
+                tour.append(offspring[i])
+                visited[offspring[i]] = True
+        for i in range(1,len(offspring)+1):
+            if not visited[i]:
+                tour.append(i)
+        return tour
+
+    def survivalSelection(self):
+        self.population = ss.truncation(self.population,self.n)
+        #print(self.population.keys())
+
+    def getFitness(self):
+        return list(self.population.keys())
+    
+
+def main():
+    bruh = TSP('qa194.tsp',30)
+    #bruh.crossOver()
+    for i in range(10):
+        for i in range(10000):
+            bruh.crossOver()
+        bruh.survivalSelection()
+    print(bruh.getFitness())
+
+
+main()
+    
+
+        
 
 
 
