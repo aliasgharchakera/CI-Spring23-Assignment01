@@ -149,7 +149,7 @@ ss_lst = []
 bs_lst = []
 ms_lst = []
 qs_lst = []
-x = range(21000, 25001, 1000)
+x = range(40000, 450001, 1000)
 for n in x:
 	index_lst = []
 	c = 0
