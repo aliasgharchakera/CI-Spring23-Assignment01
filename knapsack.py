@@ -8,11 +8,11 @@ class Sack:
         # self.items = list()
         self.weight = 0
         self.value = 0
+        self.items = dict()
         self.__initializeSack(n)
         self.__calculateWV()
         
     def __initializeSack(self, n):
-        self.items = dict()
         for i in range(n):
             self.items[i] = (0, 0)
     
@@ -23,11 +23,10 @@ class Sack:
     
     def insert(self, item: (int, int), n):
         # self.items.append(item)
-        try: self.items[n] = (item[0], self.items[n] + item[1])
-        except: self.items[n] = (item[0], item[1])
+        self.items[n] = (item[0], self.items[n][1] + item[1])
+        # except: self.items[n] = (item[0], item[1])
         self.weight += item[0]
         self.value += item[1]
-         
 
 class Knapsack:
     def __init__(self, path, n) -> None:
@@ -105,7 +104,7 @@ class Knapsack:
                 if sack.weight + self.stuff[k][0] > self.capacity:
                     break
                 sack.insert(self.stuff[k], k)
-            print(sack.weight)
+            print(sack.value, sack.weight)
             population.append(sack)
         return population
     
