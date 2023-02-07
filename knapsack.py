@@ -1,6 +1,7 @@
 from evolutionaryalgo import *
 import random
 
+
 class Sack:
     def __init__(self, n) -> None:
         # self.value = value
@@ -10,6 +11,7 @@ class Sack:
         self.value = 0
         self.__initializeSack(n)
         self.__calculateWV()
+        print(self.items)
         
     def __initializeSack(self, n):
         self.items = dict()
@@ -21,7 +23,7 @@ class Sack:
             self.weight += j[0]
             self.value += j[1]
     
-    def insert(self, item: (int, int), n):
+    def insert(self, item, n):
         # self.items.append(item)
         try: self.items[n] = (item[0], self.items[n] + item[1])
         except: self.items[n] = (item[0], item[1])

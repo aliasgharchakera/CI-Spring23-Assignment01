@@ -84,15 +84,19 @@ class TSP:
         offspring1 = firstParent[:crossover_point] + secondParent[crossover_point:]
         offspring2 = secondParent[:crossover_point] + firstParent[crossover_point:]
  
-        offspring1 = self.mutate(offspring1)
-        offspring2 = self.mutate(offspring2)
+        offspring1 = self.repair(offspring1)
+        offspring2 = self.repair(offspring2)
         
-        #print(self.calculateFitness(offspring1))
+        offspring1 = self.mutate(offspring1,0.5)
+        offspring2 = self.mutate(offspring2,0.5)
 
         self.population[self.calculateFitness(offspring1)] = offspring1
         self.population[self.calculateFitness(offspring2)] = offspring2
 
-    def mutate(self,offspring):
+    def repair(self,offspring):
+        '''
+        Will repair the offspring in case of repitition of any cities.
+        '''
         tour = []
         visited = [False] * (len(offspring)+1)
         for i in range(len(offspring)):
@@ -104,9 +108,24 @@ class TSP:
                 tour.append(i)
         return tour
 
+    def mutate(self,offspring:str,probability:float):
+        '''
+        It will do a coin toss to match the probability. 
+        Will make changes in offspring by swapping at various indexes.
+        '''
+        coinToss = random.random()
+        while(coinToss <= probability):
+            coinToss = random.random()
+            length = len(offspring)
+            changePoint = random.randint(0,length-1)
+            changePoint1 = random.randint(0,length-1)
+            while(changePoint == changePoint1):
+                changePoint1 = random.randint(0,length-1)
+            offspring[changePoint],offspring[changePoint1] = offspring[changePoint1], offspring[changePoint]
+        return offspring
+
     def survivalSelection(self):
         self.population = ss.truncation(self.population,self.n)
-        #print(self.population.keys())
 
     def getFitness(self):
         return list(self.population.keys())
@@ -114,12 +133,15 @@ class TSP:
 
 def main():
     bruh = TSP('qa194.tsp',30)
-    #bruh.crossOver()
+    # bruh.crossOver()
     for i in range(10):
-        for i in range(10000):
-            bruh.crossOver()
-        bruh.survivalSelection()
+        for i in range(5000):
+            for i in range(10):
+                bruh.crossOver()
+            bruh.survivalSelection()
     print(bruh.getFitness())
+
+
 
 
 main()
