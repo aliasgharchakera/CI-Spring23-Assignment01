@@ -1,4 +1,3 @@
-
 import random
 import selection_scheme as ss
 
@@ -18,7 +17,6 @@ class KnapSack:
                 self.stuff.append((int(value), int(weight)))
         # print(len(self.stuff))
         self.numItems = len(self.stuff)
-        self.numGenerations = n
         self.population = self.generatePopulation(n)
         # print(self.population)
 
@@ -40,16 +38,25 @@ class KnapSack:
             population[weight] = lstItems
         return population
 
-    def selectParents(self):
-        
-        firstParent = ss.binaryTournament(self.population)
-        secondParent = ss.binaryTournament(self.population)
+    def selectParents(self, selectionChoice:str):
+
+        if selectionChoice == 'binaryTournament':
+            firstParent = ss.binaryTournament(self.population)
+            secondParent = ss.binaryTournament(self.population)
+
+        elif selectionChoice == 'fitnessProportional':
+            parents = ss.fitnessProportionalSelection(self.population)
+            firstParent = parents[0]
+            secondParent = parents[1]
+
+        elif selectionChoice == 'rankBase':
+            pass
 
         return firstParent, secondParent
 
     def crossOver(self):
 
-        parents = self.selectParents()
+        parents = self.selectParents('binaryTournament')
         
         firstParent = self.population[parents[0]]
         secondParent = self.population[parents[1]]
@@ -65,7 +72,6 @@ class KnapSack:
         offSpring1 = [(0,0) for i in range(self.num)]
         weight1 = 0
         visited = []
-
 
         if (swap == True):
             _firstParent = secondParent
@@ -106,13 +112,16 @@ class KnapSack:
     def calculateFitness(self):
         return list(self.population.keys())
         
-    def survivalSelection(self, technique):
-        if technique == "bt":
-            self.population = ss.binaryTournament(self.population, self.numGenerations, True)
-        elif technique == "tn":
-            self.population = ss.truncation(self.population, self.numGenerations, True)
-        elif technique == "fps":
-            self.population = ss.fitnessProportionalSelection(self.population, self.numGenerations, True)
+    def survivalSelection(self, selectionChoice:str):
+
+        if selectionChoice == 'truncation':
+            self.population = ss.truncation(self.population,30, True)
+        
+        elif selectionChoice == 'fitnessProportional':
+            pass
+
+        elif selectionChoice == 'rankBase':
+            ss.rankBaseSelection(self.population,30)
         
         
 def main():
@@ -123,7 +132,7 @@ def main():
         for i in range(1000):
             for i in range(5):
                 bruh.crossOver()
-            bruh.survivalSelection("bt")
+            bruh.survivalSelection('truncation')
     print(bruh.calculateFitness())
 
 main()

@@ -61,16 +61,17 @@ class TSP:
         will select two parents randomly from the population
         '''
         #random selection of parents
-        # lstDctKeys = list(self.population.keys())
-        # # print(lstDctKeys)
-        # #print(random.randint(0,len(lstDctKeys)-1))
-        # firstRandomKey = lstDctKeys[random.randint(0,len(lstDctKeys)-1)]
-        # secondRandomKey = lstDctKeys[random.randint(0,len(lstDctKeys)-1)]
-        # return firstRandomKey, secondRandomKey
+        parents = ss.randomSelection(self.population,2)
+        return parents[0], parents[1]
 
         #Parents selection from fitness proportional share
-        parents = ss.fitnessProportionalSelection(self.population)
-        return parents[0], parents[1]
+        # parents = ss.fitnessProportionalSelection(self.population,2)
+        # return parents[0], parents[1]
+        
+        #Parents selection from rank based 
+        # parents = ss.rankBaseSelection(self.population,30,True)
+        # return parents[0], parents[1]
+
         # return ss.binaryTournament(self.population), ss.binaryTournament(self.population)
         
     def crossOver(self):
@@ -127,22 +128,26 @@ class TSP:
         return offspring
 
     def survivalSelection(self):
-        self.population = ss.truncation(self.population,self.n, False)
-
+        # self.population = ss.truncation(self.population,self.n, False)
+        #self.population = ss.rankBaseSelection(self.population,50,False)
+        # self.population = ss.fitnessProportionalSelection(self.population,50,False)
+        self.population = ss.randomSelection(self.population,30)
+    
     def getFitness(self):
         return list(self.population.keys())
     
 def main():
-    bruh = TSP('qa194.tsp',30)
+    bruh = TSP('qa194.tsp',50)
     # bruh.crossOver()
-    for i in range(1):
-        for i in range(40):
+    for i in range(10):
+        for i in range(1000):
             for i in range(5):
                 bruh.crossOver()
             bruh.survivalSelection()
-            print('Max: ',max(bruh.getFitness()))
-            print('Avg: ',statistics.mean(bruh.getFitness()))
-    #print(bruh.getFitness())
+            # print('Max: ',min(bruh.getFitness()))
+            # print('Avg: ',statistics.mean(bruh.getFitness()))
+        
+    print(bruh.getFitness())
 
 main()
     
