@@ -72,6 +72,7 @@ class TSP:
         # parents = ss.rankBaseSelection(self.population,30,True)
         # return parents[0], parents[1]
 
+        #parents selection from binary tournament
         # return ss.binaryTournament(self.population), ss.binaryTournament(self.population)
         
     def crossOver(self):
@@ -132,6 +133,7 @@ class TSP:
         #self.population = ss.rankBaseSelection(self.population,50,False)
         # self.population = ss.fitnessProportionalSelection(self.population,50,False)
         # self.population = ss.randomSelection(self.population,30)
+        self.population = ss.binaryTournamentSurvival(self.population,30)
     
     def getFitness(self):
         return list(self.population.keys())

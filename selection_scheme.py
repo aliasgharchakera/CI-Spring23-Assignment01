@@ -1,8 +1,18 @@
 
 import random
 
-def binaryTournamentSurvival():
-    pass
+def binaryTournamentSurvival(population:dict, n:int):
+    lst = []
+    i = 0
+    while i < n:
+        key = binaryTournament(population)
+        if key not in lst:
+            lst.append(key)
+            i += 1
+    newDct = {}
+    for i in lst:
+        newDct[i] = population[i]
+    return newDct
 
 def binaryTournament(population:dict):
     '''
