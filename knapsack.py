@@ -2,6 +2,7 @@ from evolutionaryalgo import *
 import random
 
 
+
 class Sack:
     def __init__(self, n) -> None:
         # self.value = value
@@ -12,7 +13,7 @@ class Sack:
         self.items = dict()
         self.__initializeSack(n)
         self.__calculateWV()
-        print(self.items)
+        #print(self.items)
         
     def __initializeSack(self, n):
         for i in range(n):
@@ -33,7 +34,7 @@ class Sack:
 class Knapsack:
     def __init__(self, path, n) -> None:
         self.things = dict()
-        self.stuff = list()
+        self.stuff = list()  #(weight, value)
         self.fitness = list()
         with open(path) as f:
             lines = f.readlines()
@@ -49,7 +50,8 @@ class Knapsack:
             # print(list(self.things))
         # print(self.graph)
         self.population = self.generatePopulation(n)
-        self.calculateFitness()
+        # print(self.population[0].items)
+        #self.calculateFitness()
         # print(self.population)
         
     def calculateFitness(self):
@@ -59,20 +61,20 @@ class Knapsack:
         for i in self.population:
             self.fitness.append(i.value)
     
-    def __getFitness(self, sack: Sack):
-        """returns the fitness value for the population
+    # def __getFitness(self, sack: Sack):
+    #     """returns the fitness value for the population
 
-        Args:
-            lst (list): population
-        """
-        for i in range(len(lst)):
-            pass
+    #     Args:
+    #         lst (list): population
+    #     """
+    #     for i in range(len(lst)):
+    #         pass
 
     def generatePopulation(self, n):
         """
         Generates a random initial population.
         """
-        population = list()
+        population = dict()
         sum = 0
         # for i in range(n):
         #     done = dict()
@@ -100,14 +102,19 @@ class Knapsack:
         #     print(sum)
         #     population.append(done)
         for i in range(n):
-            sack = Sack(self.num)
-            while sack.weight < self.capacity:
+            weight = 0
+            items = []
+            #sack = Sack(self.num)
+            while weight < self.capacity:
                 k = random.randint(0, self.num - 1)
-                if sack.weight + self.stuff[k][0] > self.capacity:
+                if weight + self.stuff[k][0] > self.capacity:
                     break
-                sack.insert(self.stuff[k], k)
-            print(sack.value, sack.weight)
-            population.append(sack)
+                items.append(self.stuff[k])
+                weight += self.stuff[k][0]
+                #sack.insert(self.stuff[k], k)
+            # print(sack.value, sack.weight)
+            # population.append(sack)
+            population[weight] = items
         return population
     
     def chooseParents(self):
@@ -116,14 +123,15 @@ class Knapsack:
         
         Returns the selected pair
         """
-        max = 0
-        j = 0
-        maxJ = 0
-        for i in self.fitness:
-            if i > max:
-                max = i
-                maxJ = j
-            j += 1
+        # max = 0
+        # j = 0
+        # maxJ = 0
+        # for i in self.fitness:
+        #     if i > max:
+        #         max = i
+        #         maxJ = j
+        #     j += 1
+
                 
     
     def getOffspring(self, parents: list):

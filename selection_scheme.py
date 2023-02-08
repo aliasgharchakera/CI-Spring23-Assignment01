@@ -1,7 +1,7 @@
 
 import random
 
-def binaryTournament(self,population:dict):
+def binaryTournament(population:dict):
     
     lstDctKeys = list(population.keys())
     firstKey = lstDctKeys[random.randint(0,len(lstDctKeys)-1)]
@@ -10,13 +10,16 @@ def binaryTournament(self,population:dict):
         return secondKey
     return firstKey
 
-def truncation(population:dict,n:int):
+def truncation(population:dict,n:int, reverse):
     '''
     It will sort the population based on fitness values and truncate the ones with lowest fitness.
     '''
     newDct = {}
     keysLst = list(population.keys())
-    keysLst.sort()
+    if reverse == True:
+        keysLst = sorted(keysLst, reverse=True)
+    else:
+        keysLst.sort()
     lengthOfPopulation = len(keysLst)
     shortListedKeys = list()
     j = 0

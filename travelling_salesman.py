@@ -68,9 +68,10 @@ class TSP:
         # return firstRandomKey, secondRandomKey
 
         #Parents selection from fitness proportional share
-        parents = ss.fitnessProportionalSelection(self.population)
-        return parents[0], parents[1]
-
+        # parents = ss.fitnessProportionalSelection(self.population)
+        # return parents[0], parents[1]
+        return ss.binaryTournament(self.population), ss.binaryTournament(self.population)
+        
     def crossOver(self):
         '''
         This function will do crossover of two parents
@@ -130,19 +131,15 @@ class TSP:
     def getFitness(self):
         return list(self.population.keys())
     
-
 def main():
     bruh = TSP('qa194.tsp',30)
     # bruh.crossOver()
     for i in range(10):
         for i in range(5000):
-            for i in range(10):
+            for i in range(5):
                 bruh.crossOver()
             bruh.survivalSelection()
     print(bruh.getFitness())
-
-
-
 
 main()
     
