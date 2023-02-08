@@ -62,7 +62,7 @@ def fitnessProportionalSelection(population:dict)->list:
             break 
     return parents
 
-def rankBaseSelection(population:dict):
+def rankBaseSelection(population: dict):
     pass
 
 

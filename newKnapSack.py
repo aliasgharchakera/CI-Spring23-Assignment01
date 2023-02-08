@@ -18,6 +18,7 @@ class KnapSack:
                 self.stuff.append((int(value), int(weight)))
         # print(len(self.stuff))
         self.numItems = len(self.stuff)
+        self.numGenerations = n
         self.population = self.generatePopulation(n)
         # print(self.population)
 
@@ -105,8 +106,13 @@ class KnapSack:
     def calculateFitness(self):
         return list(self.population.keys())
         
-    def survivalSelection(self):
-        self.population = ss.truncation(self.population,30, True)
+    def survivalSelection(self, technique):
+        if technique == "bt":
+            self.population = ss.binaryTournament(self.population, self.numGenerations, True)
+        elif technique == "tn":
+            self.population = ss.truncation(self.population, self.numGenerations, True)
+        elif technique == "fps":
+            self.population = ss.fitnessProportionalSelection(self.population, self.numGenerations, True)
         
         
 def main():
@@ -117,7 +123,7 @@ def main():
         for i in range(1000):
             for i in range(5):
                 bruh.crossOver()
-            bruh.survivalSelection()
+            bruh.survivalSelection("bt")
     print(bruh.calculateFitness())
 
 main()
