@@ -1,6 +1,7 @@
 import random
 import copy
 class graphColoring:
+    
     def __init__(self, path, colors, n) -> None:
         self.colors = colors
         self.graph = self.read_graph_from_file(path)
@@ -50,7 +51,7 @@ class graphColoring:
     # def select_parents(self):
         
 
-def genetic_algorithm(graph, max_generations, mutation_probability):
+def genetic_algorithm(graph:graphColoring, max_generations, mutation_probability):
     # population = graph.generate_initial_population(graph, colors, population_size)
     for generation in range(max_generations):
         graph.population.sort(key=lambda x: graph.fitness(x))
