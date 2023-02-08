@@ -4,6 +4,7 @@ import math
 import random
 import statistics
 import selection_scheme as ss
+import matplotlib.pyplot as plt
 
 class TSP:
     
@@ -135,16 +136,32 @@ class TSP:
 def main():
     bruh = TSP('qa194.tsp',30)
     # bruh.crossOver()
-    for i in range(1):
-        for i in range(40):
-            for i in range(5):
+    minlst, avglst, avgminlst, avgavglst = list(), list(), list(), list()
+    for iteration in range(10):
+        bruh.generatePopulation(30)
+        for generation in range(1000):
+            for offspring in range(5):
                 bruh.crossOver()
             bruh.survivalSelection()
-            print('Max: ',max(bruh.getFitness()))
-            print('Avg: ',statistics.mean(bruh.getFitness()))
+            # print('Max: ',max(bruh.getFitness()))
+            minlst.append(min(bruh.getFitness()))
+            avglst.append(statistics.mean(bruh.getFitness()))
+            # print('Avg: ',statistics.mean(bruh.getFitness()))
+        avgminlst.append(statistics.mean(minlst))
+        avgavglst.append(statistics.mean(avglst))
+    return avgminlst, avgavglst
     #print(bruh.getFitness())
 
-main()
+
+minlst, avglst = main()
+plt.plot([i for i in range(1, 11)], minlst, label="min")
+plt.plot([i for i in range(1, 11)], avglst, label="avg")
+plt.xlabel('iteration')
+plt.ylabel('fitness')
+plt.title('Plot of average fitness against iterations')
+plt.legend()
+plt.show()
+
     
 
         
