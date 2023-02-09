@@ -4,6 +4,7 @@ import math
 import random
 import statistics
 import selection_scheme as ss
+import matplotlib.pyplot as plt
 
 class TSP:
     
@@ -61,16 +62,16 @@ class TSP:
         will select two parents randomly from the population
         '''
         #random selection of parents
-        parents = ss.randomSelection(self.population,2)
-        return parents[0], parents[1]
+        # parents = ss.randomSelection(self.population,2)
+        # return parents[0], parents[1]
 
         #Parents selection from fitness proportional share
-        # parents = ss.fitnessProportionalSelection(self.population,2)
+        # parents = ss.fitnessProportionalSelection(self.population, 2, True)
         # return parents[0], parents[1]
         
         #Parents selection from rank based 
-        # parents = ss.rankBaseSelection(self.population,30,True)
-        # return parents[0], parents[1]
+        parents = ss.rankBaseSelection(self.population,30,True)
+        return parents[0], parents[1]
 
         #parents selection from binary tournament
         # return ss.binaryTournament(self.population), ss.binaryTournament(self.population)
@@ -130,10 +131,10 @@ class TSP:
 
     def survivalSelection(self):
         self.population = ss.truncation(self.population,self.n, False)
-        #self.population = ss.rankBaseSelection(self.population,50,False)
+        # self.population = ss.rankBaseSelection(self.population,50,False)
         # self.population = ss.fitnessProportionalSelection(self.population,50,False)
         # self.population = ss.randomSelection(self.population,30)
-        self.population = ss.binaryTournamentSurvival(self.population,30)
+        # self.population = ss.binaryTournamentSurvival(self.population,30)
     
     def getFitness(self):
         return list(self.population.keys())
@@ -141,16 +142,33 @@ class TSP:
 def main():
     bruh = TSP('qa194.tsp',30)
     # bruh.crossOver()
-    for i in range(1):
-        for i in range(40):
-            for i in range(5):
+    minlst, avglst, avgminlst, avgavglst = list(), list(), list(), list()
+    for iteration in range(10):
+        bruh.generatePopulation(30)
+        for generation in range(1000):
+            for offspring in range(5):
                 bruh.crossOver()
             bruh.survivalSelection()
-            print('Max: ',max(bruh.getFitness()))
-            print('Avg: ',statistics.mean(bruh.getFitness()))
+            # print('Max: ',max(bruh.getFitness()))
+            minlst.append(min(bruh.getFitness()))
+            avglst.append(statistics.mean(bruh.getFitness()))
+            # print('Avg: ',statistics.mean(bruh.getFitness()))
+        avgminlst.append(statistics.mean(minlst))
+        avgavglst.append(statistics.mean(avglst))
+    return avgminlst, avgavglst
     #print(bruh.getFitness())
 
-main()
+
+minlst, avglst = main()
+plt.plot([i for i in range(1, 11)], minlst, label="min")
+plt.plot([i for i in range(1, 11)], avglst, label="avg")
+# plt.xlabel('generation')
+# plt.title('Plot of average fitness against generations')
+plt.xlabel('iteration')
+plt.title('Plot of average fitness against iterations')
+plt.ylabel('fitness')
+plt.legend()
+plt.show()
     
 
         

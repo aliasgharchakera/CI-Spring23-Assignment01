@@ -1,4 +1,6 @@
 import random
+import statistics
+import matplotlib.pyplot as plt
 import selection_scheme as ss
 
 class KnapSack:
@@ -122,17 +124,43 @@ class KnapSack:
 
         elif selectionChoice == 'rankBase':
             ss.rankBaseSelection(self.population,30)
-        
+      
+    def getFitness(self):
+        return list(self.population.keys())
         
 def main():
     bruh = KnapSack('f8_l-d_kp_23_10000',30)
     # print(bruh.calculateFitness())
     # bruh.crossOver()
-    for i in range(10):
-        for i in range(1000):
-            for i in range(5):
+    minlst, avglst, avgminlst, avgavglst = list(), list(), list(), list()
+    for iteration in range(1):
+        # bruh.generatePopulation(30)
+        for generation in range(40):
+            for offspring in range(5):
                 bruh.crossOver()
             bruh.survivalSelection('truncation')
-    print(bruh.calculateFitness())
+            # print('Max: ',max(bruh.getFitness()))
+            minlst.append(max(bruh.getFitness()))
+            avglst.append(statistics.mean(bruh.getFitness()))
+            # print('Avg: ',statistics.mean(bruh.getFitness()))
+        avgminlst.append(statistics.mean(minlst))
+        avgavglst.append(statistics.mean(avglst))
+    return minlst, avglst
+    # for i in range(10):
+    #     for i in range(1000):
+    #         for i in range(5):
+    #             bruh.crossOver()
+    #         bruh.survivalSelection('truncation')
+    # print(bruh.calculateFitness())
 
-main()
+
+minlst, avglst = main()
+plt.plot([i for i in range(1, 41)], minlst, label="max")
+plt.plot([i for i in range(1, 41)], avglst, label="avg")
+plt.xlabel('generation')
+plt.title('Plot of average fitness against generations')
+# plt.xlabel('iteration')
+# plt.title('Plot of average fitness against iterations')
+plt.ylabel('fitness')
+plt.legend()
+plt.show()
