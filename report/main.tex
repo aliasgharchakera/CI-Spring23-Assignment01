@@ -7,6 +7,7 @@
 % \usepackage[demo]{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{float}
 % \usepackage{subfigure}
 
 
@@ -33,7 +34,7 @@
   The following are plots for respective selection schemes. The first one is for the parent selection
   and the second one is for the survival selection.
 
-  \begin{figure}[!ht]
+  \begin{figure}[H]
     \centering
     \textbf{Fitness Proportional Scheme and Truncation}
     \begin{subfigure}{.5\textwidth}
@@ -54,7 +55,7 @@
 
   As we can our second run was the best one out of the 10.
 
-  \begin{figure}[!ht]
+  \begin{figure}[H]
     \centering
     \textbf{Fitness Proportional Scheme and Binary Tournament Selection Scheme}
     \begin{subfigure}{.5\textwidth}
@@ -73,7 +74,7 @@
     \label{fig:tsp_fps_bt}
   \end{figure}
 
-  \begin{figure}[!ht]
+  \begin{figure}[H]
     \centering
     \textbf{Fitness Proportional Scheme and Random Selection Scheme}
     \begin{subfigure}{.5\textwidth}
@@ -92,7 +93,7 @@
     \label{fig:tsp_fps_rd}
   \end{figure}
 
-  \begin{figure}[!ht]
+  \begin{figure}[H]
     \centering
     \textbf{Fitness Proportional Scheme and Rank Based Selection Scheme}
     \begin{subfigure}{.5\textwidth}
@@ -111,7 +112,7 @@
     \label{fig:tsp_fps_rbs}
   \end{figure}
 
-  \begin{figure}[!ht]
+  \begin{figure}[H]
     \centering
     \textbf{Rank Based Selection and Truncation}
     \begin{subfigure}{.5\textwidth}
@@ -130,10 +131,48 @@
     \label{fig:tsp_rbs_tn}
   \end{figure}
 
-  \newpage
-  
-  \titledquestion{Knapsack Problem}
+  \titledquestion{Knapsack Problem}[H]
 
+  \newpage
+  \begin{figure}[H]
+    \centering
+    \textbf{Binary Tournament and Truncation}
+    \begin{subfigure}{.5\textwidth}
+      \centering
+      \includegraphics[width=1\linewidth]{images/ks_bt_tn_gen.png}
+      \caption{TSP Single run on 40 generations}
+      \label{fig:ks_bt_tn_sub1}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+      \centering
+      \includegraphics[width=1\linewidth]{images/ks_bt_tn_itr.png}
+      \caption{TSP 10 runs on 1000 generations}
+      \label{fig:ks_bt_tn_sub2}
+    \end{subfigure}
+    \caption{Note: Fitness is the distance}
+    \label{fig:ks_bt_tn}
+  \end{figure}
+
+  \begin{figure}[H]
+    \centering
+    \textbf{Binary Tournament and Rank Based Selection Scheme}
+    \begin{subfigure}{.5\textwidth}
+      \centering
+      \includegraphics[width=1\linewidth]{images/ks_bt_rbs_gen.png}
+      \caption{TSP Single run on 40 generations}
+      \label{fig:ks_bt_rbs_sub1}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+      \centering
+      \includegraphics[width=1\linewidth]{images/ks_bt_rbs_itr.png}
+      \caption{TSP 10 runs on 1000 generations}
+      \label{fig:ks_bt_rbs_sub2}
+    \end{subfigure}
+    \caption{Note: Fitness is the distance}
+    \label{fig:ks_bt_rbs}
+  \end{figure}
+
+  \titledquestion{Graph Coloring Problem}[H]
 \end{questions}
 
 \end{document}

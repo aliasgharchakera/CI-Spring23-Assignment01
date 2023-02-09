@@ -30,14 +30,16 @@ class KnapSack:
         for i in range(n):
             lstItems = [(0,0) for i in range(self.numItems)]
             weight = 0
+            value  = 0
             randomNum = random.randint(0,self.numItems-1)
             selectItem = self.stuff[randomNum]
             while(weight + selectItem[1] <= self.capacity):
                 lstItems[randomNum] = selectItem
                 weight += selectItem[1]
+                value += selectItem[0]
                 randomNum = random.randint(0,self.numItems-1)
                 selectItem = self.stuff[randomNum]
-            population[weight] = lstItems
+            population[value] = lstItems
         return population
 
     def selectParents(self, selectionChoice:str):
@@ -47,7 +49,7 @@ class KnapSack:
             secondParent = ss.binaryTournament(self.population)
 
         elif selectionChoice == 'fitnessProportional':
-            parents = ss.fitnessProportionalSelection(self.population)
+            parents = ss.fitnessProportionalSelection(self.population, 3, True)
             firstParent = parents[0]
             secondParent = parents[1]
 
@@ -123,7 +125,7 @@ class KnapSack:
             pass
 
         elif selectionChoice == 'rankBase':
-            ss.rankBaseSelection(self.population,30)
+            ss.rankBaseSelection(self.population,30, False)
       
     def getFitness(self):
         return list(self.population.keys())
@@ -138,7 +140,7 @@ def main():
         for generation in range(40):
             for offspring in range(5):
                 bruh.crossOver()
-            bruh.survivalSelection('truncation')
+            bruh.survivalSelection('rankBase')
             # print('Max: ',max(bruh.getFitness()))
             minlst.append(max(bruh.getFitness()))
             avglst.append(statistics.mean(bruh.getFitness()))
