@@ -20,6 +20,7 @@ The following dependencies are required to run the code:
 - Python
 - NumPy
 - Matplotlib (for visualizations, optional)
+- TSPlib95
 
 ## Algorithm Overview
 The implemented evolutionary algorithm follows these main steps:
