@@ -17,7 +17,7 @@ The main goal of this assignment is to showcase the implementation and applicati
 
 ## Dependencies
 The following dependencies are required to run the code:
-- Python (version 3.x)
+- Python
 - NumPy
 - Matplotlib (for visualizations, optional)
 
